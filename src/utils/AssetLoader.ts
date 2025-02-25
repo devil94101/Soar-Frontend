@@ -1,17 +1,9 @@
-// Single source of truth for all assets
+
 const ASSETS = {
-  // Icons & Logos
-  ChipCard: () => import('../assets/Chip_Card.svg'),
-  CardCircle: () => import('../assets/card_circle.svg'),
-  PayPal: () => import('../assets/paypal.svg'),
-  Card: () => import('../assets/Card.svg'),
-  Person: () => import('../assets/Person.svg'),
 
-  // Charts
-  CHART_JS: () => import('chart.js'),
-  CHART_DATALABELS: () => import('chartjs-plugin-datalabels'),
+  CHART_JS: () => import("chart.js"),
+  CHART_DATALABELS: () => import("chartjs-plugin-datalabels"),
 
-  // Add other assets here...
 } as const;
 
 type AssetKey = keyof typeof ASSETS;
@@ -36,8 +28,8 @@ class AssetLoader {
   }
 
   static async preloadAssets(keys: AssetKey[]) {
-    return Promise.all(keys.map(key => this.load(key)));
+    return Promise.all(keys.map((key) => this.load(key)));
   }
 }
 
-export default AssetLoader; 
+export default AssetLoader;

@@ -1,62 +1,111 @@
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
+import { Pie } from "react-chartjs-2";
+import { useEffect, useState } from "react";
+import { Transaction } from "../../types";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
-export default function ExpenseStatistics() {
-  const data = {
-    labels: ['Entertainment', 'Bill Expense', 'Investment', 'Others'],
+export default function ExpenseStatistics({
+  transactions,
+}: {
+  transactions: Transaction[];
+}) {
+  const [data, setData] = useState({
+    labels: ["Entertainment", "Bill Expense", "Investment", "Others"],
     datasets: [
       {
-        data: [30, 15, 20, 35],
-        backgroundColor: [
-          '#343C6A',   // Dark blue for Entertainment
-          '#FC7900',   // Orange for Bill Expense
-          '#2D60FF',   // Blue for Investment
-          '#1C1C1C',   // Black for Others
-        ],
-        borderColor: '#FFFFFF',
+        data: [0, 0, 0, 0],
+        backgroundColor: ["#343C6A", "#FC7900", "#2D60FF", "#1C1C1C"],
+        borderColor: "#FFFFFF",
         borderWidth: 2,
-        spacing: 5,    // This creates space between segments
+        spacing: 5,
       },
     ],
-  };
+  });
+
+  useEffect(() => {
+    const withdrawalTransactions = transactions.filter(
+      (transaction) => transaction.type === "withdrawal"
+    );
+
+    const totalWithdrawals = withdrawalTransactions.reduce(
+      (total, transaction) => total + transaction.amount,
+      0
+    );
+
+    const entertainment = withdrawalTransactions
+      .filter((transaction) => transaction.use === "entertainment")
+      .reduce((total, transaction) => total + transaction.amount, 0);
+
+    const billExpense = withdrawalTransactions
+      .filter((transaction) => transaction.use === "bills")
+      .reduce((total, transaction) => total + transaction.amount, 0);
+
+    const investment = withdrawalTransactions
+      .filter((transaction) => transaction.use === "investment")
+      .reduce((total, transaction) => total + transaction.amount, 0);
+
+    const others =
+      totalWithdrawals - (entertainment + billExpense + investment);
+
+    const percentages =
+      totalWithdrawals > 0
+        ? [
+            (entertainment / totalWithdrawals) * 100,
+            (billExpense / totalWithdrawals) * 100,
+            (investment / totalWithdrawals) * 100,
+            (others / totalWithdrawals) * 100,
+          ]
+        : [0, 0, 0, 0];
+
+    setData({
+      labels: ["Entertainment", "Bill Expense", "Investment", "Others"],
+      datasets: [
+        {
+          data: percentages,
+          backgroundColor: ["#343C6A", "#FC7900", "#2D60FF", "#1C1C1C"],
+          borderColor: "#FFFFFF",
+          borderWidth: 2,
+          spacing: 5,
+        },
+      ],
+    });
+  }, [transactions]);
 
   const options = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false, // Hide the external legend
+        display: false, 
       },
       datalabels: {
         display: true,
-        color: '#FFFFFF',
+        color: "#FFFFFF",
         font: {
-          
           size: 10,
           family: "'Inter', sans-serif",
         },
         formatter: (value: number, context: any) => {
           const label = context.chart.data.labels[context.dataIndex];
-          return [`${label}`, `${value}%`];  // Return both label and percentage
+          return [`${label}`, `${value.toFixed(2)}%`]; 
         },
-        anchor: 'center' as const,
-        align: 'center' as const,
-        textAlign: 'center' as const,
+        anchor: "center" as const,
+        align: "center" as const,
+        textAlign: "center" as const,
       },
       tooltip: {
         enabled: true,
         callbacks: {
           label: (context: any) => {
-            return ` ${context.label}: ${context.raw}%`;
+            return ` ${context.label}: ${context.raw.toFixed(2)}%`;
           },
         },
       },
     },
     layout: {
-      padding: 0
+      padding: 0,
     },
   };
 
@@ -67,12 +116,17 @@ export default function ExpenseStatistics() {
           Expense Statistics
         </h2>
       </div>
-      <div className=" bg-white p-6 flex items-center justify-center rounded-lg">
-        <div className="h-60">
-          <Pie 
-            data={data} 
+      <div className="bg-white p-6 flex items-center justify-center rounded-lg">
+        <div
+          className="h-60"
+          role="region"
+          aria-label="Expense Statistics Chart"
+        >
+          <Pie
+            data={data}
             options={options}
             plugins={[ChartDataLabels]}
+            aria-label="Pie chart showing expense distribution"
           />
         </div>
       </div>

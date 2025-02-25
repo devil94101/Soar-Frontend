@@ -5,13 +5,15 @@ import { z } from "zod";
 import { RootState } from "../store";
 import { updateUser } from "../store/slices/userSlice";
 import { UserFormType } from "../types";
-import { Edit, Edit2Icon, Edit3Icon, PenIcon } from "lucide-react";
+import { Edit2Icon } from "lucide-react";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 const userSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   username: z.string().min(3, "Username must be at least 3 characters"),
   email: z.string().email("Invalid email address"),
-  password: z.string(),
+  password: z.string().min(6, "Password must contains atleast 6 characters!"),
   dateOfBirth: z.string(),
   presentAddress: z.string(),
   permanentAddress: z.string(),
@@ -48,6 +50,7 @@ const formFields: UserFormType[] = [
 export default function ProfileUpdate() {
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
+  const [image, setImage] = useState<string | null>(user.avatar);
 
   const {
     register,
@@ -59,7 +62,16 @@ export default function ProfileUpdate() {
   });
 
   const onSubmit = (data: UserFormData) => {
-    dispatch(updateUser(data));
+    dispatch(updateUser({ ...data, avatar: image || '' }));
+    toast.success("User data updated successfully!");
+  };
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setImage(url);
+    }
   };
 
   return (
@@ -67,13 +79,21 @@ export default function ProfileUpdate() {
       <div className="flex justify-between lg:flex-row flex-col">
         <div className="relative mx-auto mb-8 lg:mb-0">
           <img
-            src={user.avatar}
+            src={image as string}
             alt={user.name}
             className="h-24 w-24 rounded-full"
           />
-          <div className="absolute top-16 lg:right-0 bg-black rounded-full p-2 cursor-pointer">
-            <Edit2Icon color="white" height={12} width={12} />
-          </div>
+          <label className="absolute top-16 lg:right-0 cursor-pointer">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+            <div className="bg-black rounded-full p-2">
+              <Edit2Icon color="white" height={12} width={12} />
+            </div>
+          </label>
         </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:w-[80%]">
           {formFields.map((field) => (

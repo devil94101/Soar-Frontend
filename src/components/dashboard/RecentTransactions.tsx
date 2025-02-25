@@ -1,22 +1,29 @@
 import { Transaction } from "../../types";
-import CardIcon from '../../assets/Card.svg';
-import PaypalIcon from '../../assets/paypal.svg';
-import PersonIcon from '../../assets/Person.svg';
+import CardIcon from "../../assets/Card.svg";
+import PaypalIcon from "../../assets/paypal.svg";
+import PersonIcon from "../../assets/Person.svg";
+import { Link } from "react-router-dom";
 
 interface RecentTransactionsProps {
   transactions: Transaction[];
 }
 
-export default function RecentTransactions({ transactions }: RecentTransactionsProps) {
+export default function RecentTransactions({
+  transactions,
+}: RecentTransactionsProps) {
+  console.log(transactions)
   return (
     <div className="rounded-lg">
       <div className="flex justify-between items-center mb-6 p-6">
         <h2 className="text-lg font-semibold text-[#343C6A]">
           Recent Transactions
         </h2>
-        <button className="text-sm text-[#343C6A] hover:text-indigo-900">
+        <Link
+          to="/transactions"
+          className="text-sm text-[#343C6A] hover:text-indigo-900 hover:underline transition duration-200"
+        >
           See All
-        </button>
+        </Link>
       </div>
       <div className="px-6 bg-white rounded-lg min-h-[270px]">
         {transactions.slice(0, 3).map((transaction) => (
@@ -40,10 +47,12 @@ export default function RecentTransactions({ transactions }: RecentTransactionsP
                 />
               </div>
               <div>
-                <p className="text-sm font-medium text-[#343C6A]">
+                <p className="text-sm font-medium text-[#343C6A] lg:text-xs">
                   {transaction.description}
                 </p>
-                <p className="text-sm text-gray-500">{transaction.date}</p>
+                <p className="text-xs text-gray-500 lg:text-2xs">
+                  {new Date(transaction.date).toDateString()}
+                </p>
               </div>
             </div>
             <div
@@ -51,7 +60,7 @@ export default function RecentTransactions({ transactions }: RecentTransactionsP
                 transaction.type === "deposit"
                   ? "text-green-600"
                   : "text-red-600"
-              }`}
+              } lg:text-xs`}
             >
               {transaction.type === "deposit" ? "+" : "-"}$
               {transaction.amount.toLocaleString()}
