@@ -20,6 +20,9 @@ To run the application locally, follow these steps:
 4. **Open the Application**:
    Open your web browser and navigate to `http://localhost:3000` to view the application.
 
+5. **Live Demo**:
+   You can also view the live demo of the application at [this link](https://soar-frontend-theta.vercel.app/).
+
 ## Assumptions
 
 - The application does not use any external APIs; all data is hardcoded for demonstration purposes.
