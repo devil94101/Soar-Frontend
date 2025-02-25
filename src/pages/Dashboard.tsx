@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { lazy, Suspense } from 'react';
 
-// Lazy load components
 const MyCards = lazy(() => import('../components/dashboard/MyCards'));
 const RecentTransactions = lazy(() => import('../components/dashboard/RecentTransactions'));
 const WeeklyActivity = lazy(() => import('../components/dashboard/WeeklyActivity'));
@@ -17,14 +16,14 @@ export default function Dashboard() {
   return (
     <div className="space-y-0 lg:space-y-6">
       <div className="grid grid-cols-12 gap-0 lg:gap-6">
-        <div className="col-span-12 lg:col-span-8 h-[400px]">
+        <div className="col-span-12 lg:col-span-7 h-[400px]">
           <Suspense fallback={<div className="h-full bg-white lg:rounded-lg animate-pulse" />}>
             <div className="h-full bg-white lg:rounded-lg">
               <MyCards cards={cards} />
             </div>
           </Suspense>
         </div>
-        <div className="col-span-12 lg:col-span-4 h-[400px]">
+        <div className="col-span-12 lg:col-span-5 h-[400px]">
           <Suspense fallback={<div className="h-full bg-white lg:rounded-lg animate-pulse" />}>
             <div className="h-full bg-white lg:rounded-lg">
               <RecentTransactions transactions={transactions} />
@@ -33,33 +32,33 @@ export default function Dashboard() {
         </div>
       </div>
       <div className="grid grid-cols-12 gap-0 lg:gap-6">
-        <div className="col-span-12 lg:col-span-8 h-[400px]">
+        <div className="col-span-12 lg:col-span-7 h-[400px]">
           <Suspense fallback={<div className="h-full bg-white lg:rounded-lg animate-pulse" />}>
             <div className="h-full bg-white lg:rounded-lg">
-              <WeeklyActivity />
+              <WeeklyActivity transactions={transactions} />
             </div>
           </Suspense>
         </div>
-        <div className="col-span-12 lg:col-span-4 h-[400px]">
+        <div className="col-span-12 lg:col-span-5 h-[400px]">
           <Suspense fallback={<div className="h-full bg-white lg:rounded-lg animate-pulse" />}>
             <div className="h-full bg-white lg:rounded-lg">
-              <ExpenseStatistics />
+              <ExpenseStatistics transactions={transactions} />
             </div>
           </Suspense>
         </div>
       </div>
       <div className="grid grid-cols-12 gap-0 lg:gap-6">
-        <div className="col-span-12 lg:col-span-4 h-[400px]">
+        <div className="col-span-12 lg:col-span-5 h-[400px]">
           <Suspense fallback={<div className="h-full bg-white lg:rounded-lg animate-pulse" />}>
             <div className="h-full bg-white lg:rounded-lg">
               <QuickTransfer />
             </div>
           </Suspense>
         </div>
-        <div className="col-span-12 lg:col-span-8 h-[400px]">
+        <div className="col-span-12 lg:col-span-7 h-[400px]">
           <Suspense fallback={<div className="h-full bg-white lg:rounded-lg animate-pulse" />}>
             <div className="h-full bg-white lg:rounded-lg">
-              <BalanceHistory />
+              <BalanceHistory transactions={transactions} />
             </div>
           </Suspense>
         </div>

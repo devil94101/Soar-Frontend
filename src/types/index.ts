@@ -28,6 +28,7 @@ export interface Transaction {
   description: string;
   date: string;
   serviceProvider: string;
+  use?: 'others' | 'entertainment' | 'investment' | 'bills',
 }
 
 export interface Contact {
